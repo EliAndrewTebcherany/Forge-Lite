@@ -5,9 +5,10 @@ Welcome to **Forge-Lite**, a lightweight graphics framework written in pure C. T
 ---
 
 ## 📦 What's Inside the SDK Folder
+
 Once compiled, this SDK distributes two primary components:
-*   **`Forge-Lite.h`**: The main public interface definitions to include in your source code.
-*   **`libforge_lite.a`**: The monolithic static engine library archive.
+* **`Forge-Lite.h`**: The main public interface definitions to include in your source code.
+* **`libforge_lite.a`**: The monolithic static engine library archive.
 
 ---
 
@@ -35,7 +36,9 @@ Once compiled, this SDK distributes two primary components:
 ## 🚀 Compilation Blueprint
 
 ### 1. Project Layout
+
 To build a program using the compiled SDK assets, place your source file right next to the library files:
+
 ```text
 your_project/
 ├── Forge-Lite.h
@@ -44,6 +47,7 @@ your_project/
 ```
 
 ### 2. Compilation Command (Windows Native)
+
 Open your terminal application inside your project folder and execute this command to compile your program natively using GCC:
 
 ```bash
@@ -53,6 +57,7 @@ gcc main.c libforge_lite.a -lgdi32 -lwinmm -o game.exe
 ---
 
 ## 🔧 For Core Contributors & Developers
+
 If you are contributing to the Forge-Lite engine code itself, use the internal CMake configuration script to rebuild the static library binaries and compile the test applications:
 
 ```bash
