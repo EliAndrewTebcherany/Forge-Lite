@@ -1,0 +1,69 @@
+# 🛠️ Forge-Lite SDK
+
+Welcome to **Forge-Lite**, a lightweight graphics framework written in pure C. This SDK is designed to bundle window management and modern OpenGL hardware processing into a fast, self-contained pipeline.
+
+---
+
+## 📦 What's Inside the SDK Folder
+
+Once compiled, this SDK distributes two primary components:
+* **`Forge-Lite.h`**: The main public interface definitions to include in your source code.
+* **`libforge_lite.a`**: The monolithic static engine library archive.
+
+---
+
+## 📋 API Function Reference
+
+| Function Signature | Description | Return Value / Behavior |
+| :--- | :--- | :--- |
+| `void init(int width, int height, const char* title)` | Spawns a native OS desktop window, links the hardware graphics pipeline, and configures modern 2D pixel projection scales. | Returns nothing (`void`). |
+| `int window_is_open(void)` | Checks if the application window is still alive and running. | Returns `1` if open, or `0` if the user clicks the close 'X' button. |
+| `void update_screen(void)` | Flushes the graphic frames to the monitor, calculates internal delta time, polls hardware events, and clears the backdrop space. | Returns nothing (`void`). |
+| `void setBackgroundColor(Color color)` | Configures the clear color used to refresh the screen layout behind your drawings. | Returns nothing (`void`). |
+| `float getDeltaTime(void)` | Retrieves the fractional time duration elapsed between the previous frame and the current frame. | Returns a `float` representing time in seconds (e.g., `0.016` at 60 FPS). |
+| `Texture loadTexture(const char* filepath)` | Loads an image file into GPU memory as an applicable 2D graphic texture map. | Returns a populated `Texture` struct, or an empty struct (`id = 0`) on failure. |
+| `void drawShape(ShapeType type, Color color, Texture texture, float x, float y, float width, float height)` | Renders geometric primitives. Requires a color OR a texture. Passing both or neither triggers a no-op. | Returns nothing (`void`). |
+| `void drawImage(Texture texture, float x, float y, float width, float height)` | Pygame-style image builder. Pass `0` for width and height to automatically use the image's original file dimensions. | Returns nothing (`void`). |
+| `int isKeyDown(int key)` | Polls whether a specific keyboard button is actively being pressed down. Automatically converts lowercase characters to uppercase. | Returns `1` if the key is pressed down, or `0` if released. |
+| `void getMousePosition(float* x, float* y)` | Populates target pointers with the mouse cursor's exact coordinates matching window pixel space. | Returns nothing (`void`). Assigns values directly to pointers. |
+| `int isMouseButtonDown(int button)` | Checks if a specific mouse button is actively held down. | Returns `1` if held down, or `0` if released. (Pass `0` for Left Click, `1` for Right Click). |
+| `int checkCollision(Rectangle r1, Rectangle r2)` | Calculates whether two axis-aligned bounding boxes overlap one another. | Returns `1` if the boundary planes intersect (collision), or `0` if they don't. |
+| `Rectangle getShapeBounds(ShapeType type, float x, float y, float width, float height)` | Automatically maps coordinates and dimensions into a standard `Rectangle` bounding box wrapper. | Returns a `Rectangle` struct. |
+| `void shutdown_framework(void)` | Closes down shader context chains, terminates system modules, and destroys the active window container. | Returns nothing (`void`). |
+
+---
+
+## 🚀 Compilation Blueprint
+
+### 1. Project Layout
+
+To build a program using the compiled SDK assets, place your source file right next to the library files:
+
+```
+your_project/
+├── Forge-Lite.h
+├── libforge_lite.a
+└── main.c
+```
+
+### 2. Compilation Command (Windows Native)
+
+Open your terminal application inside your project folder and execute this command to compile your program natively using GCC:
+
+```bash
+gcc main.c libforge_lite.a -lgdi32 -lwinmm -o game.exe
+```
+
+---
+
+## 🔧 For Core Contributors & Developers
+
+If you are contributing to the Forge-Lite engine code itself, use the internal CMake configuration script to rebuild the static library binaries and compile the test applications:
+
+```bash
+# Wipe out old build configurations and prepare a fresh environment tree
+cmake -S . -B build --fresh
+
+# Target and compile the underlying library modules and executable files
+cmake --build build --config Debug
+```
