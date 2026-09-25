@@ -1,43 +1,48 @@
 # 🛠️ Forge-Lite SDK
 
-Welcome to **Forge-Lite**, a lightweight graphics framework written in C. This SDK bundles native window management and modern OpenGL rendering into a small, self-contained pipeline for 2D graphics and simple games.
+Forge-Lite is a lightweight graphics framework written in pure C. It provides native window management, OpenGL rendering, 2D drawing, texture loading, keyboard and mouse input, and collision detection in a small, self-contained SDK.
 
----
+## Features
 
-## 📦 What's Inside the SDK Folder
+- Native desktop window creation
+- OpenGL-based 2D rendering
+- Shapes, textures, and images
+- Keyboard and mouse input
+- Delta-time tracking
+- Rectangle collision detection
+- Static library distribution
 
-Once compiled, this SDK distributes two primary components:
-* **`Forge-Lite.h`** — The public header with API declarations you include in your source files.
-* **`libforge_lite.a`** — The monolithic static library archive containing the engine implementation.
+## SDK Contents
 
----
+After building the project, the SDK includes:
 
-## 📋 API Function Reference
+- **`Forge-Lite.h`** — Public API declarations and data types.
+- **`libforge_lite.a`** — The compiled static library.
 
-| Function Signature | Description | Return Value / Behavior |
-| :--- | :--- | :--- |
-| `void init(int width, int height, const char* title)` | Creates a native OS window, initializes the graphics context and shaders, and configures a 2D projection scaled to pixel coordinates. | No return value. Call once before any drawing or input polling. |
-| `int window_is_open(void)` | Checks whether the application window is still open. | Returns `1` if the window is open, `0` if the user has closed the window. |
-| `void update_screen(void)` | Presents the backbuffer to the display, updates the internal delta time, polls input and window events, and clears the screen for the next frame. | No return value. Call once per frame. |
-| `void setBackgroundColor(Color color)` | Sets the clear/background color used when the screen is cleared each frame. | No return value. |
-| `float getDeltaTime(void)` | Returns the elapsed time in seconds between the previous frame and the current frame. | Returns a `float` (e.g., `0.016` for ~60 FPS). |
-| `Texture loadTexture(const char* filepath)` | Loads an image file from disk into GPU memory as a 2D texture. Supported file formats depend on the build (common: PNG, JPG). | Returns a `Texture` struct with a valid `id` on success, or an empty/zeroed `Texture` (e.g., `id == 0`) on failure. |
-| `void drawShape(ShapeType type, Color color, Texture texture, float x, float y, float width, float height)` | Draws a geometric primitive (rectangle, circle, etc.). Provide either a `color` OR a `texture` — supplying both or neither is undefined. Coordinates use window pixel space. | No return value. |
-| `void drawImage(Texture texture, float x, float y, float width, float height)` | Draws a textured quad. Pass `0` for `width` and/or `height` to use the texture's original dimensions. | No return value. |
-| `int isKeyDown(int key)` | Returns whether the specified keyboard key is currently pressed. The function normalizes lowercase letter codes to uppercase. | Returns `1` if pressed, `0` otherwise. |
-| `void getMousePosition(float* x, float* y)` | Writes the mouse cursor position (in window pixel coordinates) into the provided float pointers. | No return value. Make sure pointers are valid. |
-| `int isMouseButtonDown(int button)` | Checks the state of a mouse button. | Returns `1` if held down, `0` if released. Button mapping: `0` = left, `1` = right, `2` = middle (if supported). |
-| `int checkCollision(Rectangle r1, Rectangle r2)` | Tests whether two axis-aligned rectangles overlap. | Returns `1` if the rectangles intersect, `0` otherwise. |
-| `Rectangle getShapeBounds(ShapeType type, float x, float y, float width, float height)` | Computes an axis-aligned bounding `Rectangle` for a given shape and parameters. | Returns a `Rectangle` struct representing the bounds in window coordinates. |
-| `void shutdown_framework(void)` | Tears down graphics resources, destroys the window, and performs library cleanup. | No return value. Call before exiting your program. |
+## API Reference
 
----
+| Function | Description |
+| --- | --- |
+| `void init(int width, int height, const char* title)` | Creates the application window and initializes the graphics system. Call this before using the framework. |
+| `int window_is_open(void)` | Returns `1` while the window is open and `0` after it has been closed. |
+| `void update_screen(void)` | Presents the current frame, updates delta time, processes events, and clears the screen for the next frame. Call once per frame. |
+| `void setBackgroundColor(Color color)` | Sets the color used to clear the screen. |
+| `float getDeltaTime(void)` | Returns the elapsed time since the previous frame in seconds. |
+| `Texture loadTexture(const char* filepath)` | Loads an image into GPU memory. A texture with `id == 0` indicates failure. |
+| `void drawShape(ShapeType type, Color color, Texture texture, float x, float y, float width, float height)` | Draws a shape using a color or texture. Provide either a color or a texture, not both. |
+| `void drawImage(Texture texture, float x, float y, float width, float height)` | Draws a texture. Pass `0` for `width` or `height` to use the texture's original dimensions. |
+| `int isKeyDown(int key)` | Returns `1` if the specified key is pressed and `0` otherwise. Lowercase letters are converted to uppercase. |
+| `void getMousePosition(float* x, float* y)` | Writes the mouse position in window coordinates to `x` and `y`. |
+| `int isMouseButtonDown(int button)` | Returns `1` if a mouse button is held and `0` otherwise. Button `0` is left click and button `1` is right click. |
+| `int checkCollision(Rectangle r1, Rectangle r2)` | Returns `1` if two rectangles overlap and `0` otherwise. |
+| `Rectangle getShapeBounds(ShapeType type, float x, float y, float width, float height)` | Returns the axis-aligned bounding rectangle for a shape. |
+| `void shutdown_framework(void)` | Releases framework resources and destroys the application window. Call before exiting. |
 
-## 🚀 Compilation Blueprint
+Refer to **`Forge-Lite.h`** for the exact definitions of `Color`, `Texture`, `ShapeType`, and `Rectangle`.
 
-### 1. Project Layout
+## Building an Application
 
-To build a program that uses the compiled SDK assets, place your source file next to the library files:
+Place your application source file next to the SDK files:
 
 ```text
 your_project/
@@ -46,38 +51,52 @@ your_project/
 └── main.c
 ```
 
-### 2. Compilation Command (Windows with GCC)
+### Windows with GCC
 
-Open a terminal in your project folder and run:
+Run the following command from the project directory:
 
 ```bash
 gcc main.c libforge_lite.a -lgdi32 -lwinmm -o game.exe
 ```
 
-(Optional) Example for Linux (may require different link flags depending on build):
+## Building Forge-Lite from Source
+
+Forge-Lite uses CMake. Configure and build the project with:
 
 ```bash
-gcc main.c libforge_lite.a -lGL -lX11 -lpthread -o game
-```
-
----
-
-## 🔧 For Core Contributors & Developers
-
-If you are contributing to the Forge-Lite engine itself, use the CMake configuration to rebuild the static library and test applications:
-
-```bash
-# Create a fresh build directory and configure the project
 cmake -S . -B build
-
-# Build the library and executables (Debug or Release)
 cmake --build build --config Debug
 ```
 
-Notes:
-* The SDK header (`Forge-Lite.h`) documents the public API types (`Color`, `Texture`, `ShapeType`, `Rectangle`, etc.). Refer to it for exact struct and enum definitions.
-* Report issues or feature requests via the repository issue tracker.
+For a release build, use:
 
----
+```bash
+cmake --build build --config Release
+```
 
-License: See the repository LICENSE file for licensing terms.
+## Typical Program Structure
+
+```c
+#include "Forge-Lite.h"
+
+int main(void) {
+    init(800, 600, "Forge-Lite Example");
+
+    while (window_is_open()) {
+        update_screen();
+
+        /* Draw shapes and images here. */
+    }
+
+    shutdown_framework();
+    return 0;
+}
+```
+
+## Contributing
+
+Contributions, bug reports, and feature requests are welcome. Please open an issue before making substantial changes.
+
+## License
+
+See the repository's `LICENSE` file for licensing information.
